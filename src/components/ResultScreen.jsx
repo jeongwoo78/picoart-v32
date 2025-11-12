@@ -1,10 +1,16 @@
-// PicoArt v30 - ResultScreen
-// 동양화 6개 장르 지원 + 디버깅 로그 강화
-// 2025-11-11 최종 버전
+// PicoArt v33 - ResultScreen
+// 동양화 + 미술사조 v33 교육 콘텐츠 지원
+// 2025-11-12 업데이트
 
 import React, { useState, useEffect } from 'react';
 import BeforeAfter from './BeforeAfter';
-import { orientalEducation } from '../data/educationContent';
+import { 
+  orientalEducation,
+  ancientGrecoRomanEducation,
+  byzantineIslamicEducation,
+  renaissanceEducation,
+  baroqueEducation
+} from '../data/educationContent';
 
 
 const ResultScreen = ({ 
@@ -46,7 +52,19 @@ const ResultScreen = ({
         }
       }
       
-      // 미술사조/거장은 AI로 생성
+      // v33: 미술사조도 미리 작성된 콘텐츠 사용
+      if (selectedStyle.category === 'movements') {
+        console.log('📜 Loading pre-written movements education (v33)...');
+        const content = getMovementsEducation();
+        
+        if (content) {
+          setEducationText(content);
+          setIsLoadingEducation(false);
+          return;
+        }
+      }
+      
+      // 거장은 AI로 생성
       console.log('🤖 Generating AI education...');
       const prompt = buildPrompt();
       
@@ -249,6 +267,149 @@ const ResultScreen = ({
 2문장: "{화가명}({생몰연도})은 {국적} 출신 {화풍} 화가로, {핵심 특징과 예술적 추구를 상세히} 설명."
 3문장: "대표작으로는 "{작품1}", "{작품2}", "{작품3}" 등이 있으며, {작품들의 특징을 한 문장으로}."
 4문장(선택): "{화가의 인상적인 일화나 당신 사진과의 연결을 한 문장으로}"`;
+    }
+    
+    return '';
+  };
+
+
+  // ========== 미술사조 교육 콘텐츠 (v33) ==========
+  const getMovementsEducation = () => {
+    const styleId = selectedStyle.id;
+    const artist = aiSelectedArtist || '';
+    
+    console.log('');
+    console.log('========================================');
+    console.log('🎨 MOVEMENTS EDUCATION DEBUG (v33)');
+    console.log('========================================');
+    console.log('📌 selectedStyle.id:', styleId);
+    console.log('📌 aiSelectedArtist:', artist);
+    console.log('========================================');
+    console.log('');
+    
+    // ========== 바로크 (4명) ==========
+    if (styleId === 'baroque') {
+      const artistLower = artist.toLowerCase();
+      
+      if (artistLower.includes('caravaggio') || artistLower.includes('카라바조')) {
+        console.log('✅ MATCH: Caravaggio');
+        return baroqueEducation.baroque_caravaggio?.description 
+            || baroqueEducation.baroque_default?.description;
+      }
+      else if (artistLower.includes('rembrandt') || artistLower.includes('렘브란트')) {
+        console.log('✅ MATCH: Rembrandt');
+        return baroqueEducation.baroque_rembrandt?.description 
+            || baroqueEducation.baroque_default?.description;
+      }
+      else if (artistLower.includes('rubens') || artistLower.includes('루벤스')) {
+        console.log('✅ MATCH: Rubens');
+        return baroqueEducation.baroque_rubens?.description 
+            || baroqueEducation.baroque_default?.description;
+      }
+      else if (artistLower.includes('velazquez') || artistLower.includes('velázquez') || artistLower.includes('벨라스케스')) {
+        console.log('✅ MATCH: Velázquez');
+        return baroqueEducation.baroque_velazquez?.description 
+            || baroqueEducation.baroque_default?.description;
+      }
+      else {
+        console.log('⚠️ DEFAULT: Baroque');
+        return baroqueEducation.baroque_default?.description;
+      }
+    }
+    
+    // ========== 르네상스 (4명) ==========
+    if (styleId === 'renaissance') {
+      const artistLower = artist.toLowerCase();
+      
+      if (artistLower.includes('leonardo') || artistLower.includes('da vinci') || artistLower.includes('레오나르도')) {
+        console.log('✅ MATCH: Leonardo da Vinci');
+        return renaissanceEducation.renaissance_davinci?.description 
+            || renaissanceEducation.renaissance_default?.description;
+      }
+      else if (artistLower.includes('michelangelo') || artistLower.includes('미켈란젤로')) {
+        console.log('✅ MATCH: Michelangelo');
+        return renaissanceEducation.renaissance_michelangelo?.description 
+            || renaissanceEducation.renaissance_default?.description;
+      }
+      else if (artistLower.includes('titian') || artistLower.includes('티치아노')) {
+        console.log('✅ MATCH: Titian');
+        return renaissanceEducation.renaissance_titian?.description 
+            || renaissanceEducation.renaissance_default?.description;
+      }
+      else if (artistLower.includes('botticelli') || artistLower.includes('보티첼리')) {
+        console.log('✅ MATCH: Botticelli');
+        return renaissanceEducation.renaissance_botticelli?.description 
+            || renaissanceEducation.renaissance_default?.description;
+      }
+      else {
+        console.log('⚠️ DEFAULT: Renaissance');
+        return renaissanceEducation.renaissance_default?.description;
+      }
+    }
+    
+    // ========== 비잔틴·이슬람 (5개) ==========
+    if (styleId === 'byzantineIslamic') {
+      const artistLower = artist.toLowerCase();
+      
+      if (artistLower.includes('icon') || artistLower.includes('성상')) {
+        console.log('✅ MATCH: Byzantine Icon');
+        return byzantineIslamicEducation.byzantine_icon?.description 
+            || byzantineIslamicEducation.byzantine_default?.description;
+      }
+      else if (artistLower.includes('byzantine') && artistLower.includes('mosaic')) {
+        console.log('✅ MATCH: Byzantine Mosaic');
+        return byzantineIslamicEducation.byzantine_mosaic?.description 
+            || byzantineIslamicEducation.byzantine_default?.description;
+      }
+      else if (artistLower.includes('persian') || artistLower.includes('페르시아')) {
+        console.log('✅ MATCH: Persian Miniature');
+        return byzantineIslamicEducation.persian_miniature?.description 
+            || byzantineIslamicEducation.byzantine_default?.description;
+      }
+      else if (artistLower.includes('mughal') || artistLower.includes('무굴')) {
+        console.log('✅ MATCH: Mughal Miniature');
+        return byzantineIslamicEducation.mughal_miniature?.description 
+            || byzantineIslamicEducation.byzantine_default?.description;
+      }
+      else if (artistLower.includes('geometric') || artistLower.includes('기하학')) {
+        console.log('✅ MATCH: Islamic Geometric');
+        return byzantineIslamicEducation.islamic_geometric?.description 
+            || byzantineIslamicEducation.byzantine_default?.description;
+      }
+      else {
+        console.log('⚠️ DEFAULT: Byzantine-Islamic');
+        return byzantineIslamicEducation.byzantine_default?.description;
+      }
+    }
+    
+    // ========== 고대 그리스-로마 (4개) ==========
+    if (styleId === 'ancient') {
+      const artistLower = artist.toLowerCase();
+      
+      if (artistLower.includes('vase') || artistLower.includes('항아리')) {
+        console.log('✅ MATCH: Greek Vase');
+        return ancientGrecoRomanEducation.ancient_vase?.description 
+            || ancientGrecoRomanEducation.ancient_default?.description;
+      }
+      else if (artistLower.includes('fresco') || artistLower.includes('프레스코')) {
+        console.log('✅ MATCH: Pompeii Fresco');
+        return ancientGrecoRomanEducation.ancient_fresco?.description 
+            || ancientGrecoRomanEducation.ancient_default?.description;
+      }
+      else if (artistLower.includes('garden') || artistLower.includes('정원')) {
+        console.log('✅ MATCH: Pompeii Garden');
+        return ancientGrecoRomanEducation.ancient_garden?.description 
+            || ancientGrecoRomanEducation.ancient_default?.description;
+      }
+      else if (artistLower.includes('mosaic') || artistLower.includes('모자이크')) {
+        console.log('✅ MATCH: Roman Mosaic');
+        return ancientGrecoRomanEducation.ancient_mosaic?.description 
+            || ancientGrecoRomanEducation.ancient_default?.description;
+      }
+      else {
+        console.log('⚠️ DEFAULT: Ancient Greco-Roman');
+        return ancientGrecoRomanEducation.ancient_default?.description;
+      }
     }
     
     return '';
