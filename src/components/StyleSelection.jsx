@@ -143,30 +143,37 @@ const StyleSelection = ({ onSelect }) => {
 
         {/* 2단계: 소 카테고리 선택 (탭) - 미술사조만 표시 */}
         {mainCategory === 'movements' && (
-        <div className="sub-category-nav">
-          <div className="sub-category-tabs">
-            {currentSubcategories.map(key => {
-              const category = styleCategories[key];
-              const styleData = artStyles.find(s => s.id === key || s.category === key);
-              if (!category) {
-                console.error(`Category not found: ${key}`);
-                return null;
-              }
-              return (
-                <button
-                  key={key}
-                  className={`sub-category-tab ${subCategory === key ? 'active' : ''}`}
-                  onClick={() => handleSubCategoryClick(key)}
-                >
-                  {styleData?.icon && <span className="tab-icon">{styleData.icon}</span>}
-                  <span className="tab-name">{category.name}</span>
-                  <span className="tab-period">{category.period}</span>
-                  <span className="tab-count">{getCategoryCount(key)}개</span>
-                </button>
-              );
-            })}
+        <>
+          <div className="styles-section">
+            <div className="section-header">
+              <h2>미술사조</h2>
+              <p className="section-period">서양 미술의 흐름</p>
+            </div>
+            
+            <div className="sub-category-tabs">
+              {currentSubcategories.map(key => {
+                const category = styleCategories[key];
+                const styleData = artStyles.find(s => s.id === key || s.category === key);
+                if (!category) {
+                  console.error(`Category not found: ${key}`);
+                  return null;
+                }
+                return (
+                  <button
+                    key={key}
+                    className={`sub-category-tab ${subCategory === key ? 'active' : ''}`}
+                    onClick={() => handleSubCategoryClick(key)}
+                  >
+                    {styleData?.icon && <span className="tab-icon">{styleData.icon}</span>}
+                    <span className="tab-name">{category.name}</span>
+                    <span className="tab-period">{category.period}</span>
+                    <span className="tab-count">{getCategoryCount(key)}개</span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
-        </div>
+        </>
         )}
 
         {/* 3단계: 개별 화가/스타일 선택 (거장과 동양화만 표시) */}
@@ -306,11 +313,7 @@ const StyleSelection = ({ onSelect }) => {
           opacity: 0.9;
         }
 
-        /* 2단계: 소 카테고리 */
-        .sub-category-nav {
-          margin-bottom: 2rem;
-        }
-
+        /* 2단계: 소 카테고리 (미술사조) - 거장과 동일한 스타일 */
         .sub-category-tabs {
           display: grid;
           grid-template-columns: repeat(5, 1fr);
@@ -339,10 +342,10 @@ const StyleSelection = ({ onSelect }) => {
         }
 
         .sub-category-tab.active {
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
           border-color: #667eea;
-          color: white;
+          border-width: 3px;
           box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+          transform: translateY(-2px);
         }
 
         .sub-category-tab .tab-icon {
@@ -354,13 +357,18 @@ const StyleSelection = ({ onSelect }) => {
           font-weight: 700;
         }
 
+        .sub-category-tab.active .tab-name {
+          color: #667eea;
+        }
+
         .sub-category-tab .tab-period {
           font-size: 0.8rem;
           opacity: 0.75;
         }
 
         .sub-category-tab.active .tab-period {
-          opacity: 0.95;
+          color: #667eea;
+          opacity: 0.8;
         }
 
         .sub-category-tab .tab-count {
@@ -373,8 +381,8 @@ const StyleSelection = ({ onSelect }) => {
         }
 
         .sub-category-tab.active .tab-count {
-          background: rgba(255, 255, 255, 0.25);
-          color: white;
+          background: rgba(102, 126, 234, 0.15);
+          color: #667eea;
         }
 
         /* 3단계: 화가 선택 */
