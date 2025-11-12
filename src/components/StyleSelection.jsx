@@ -1,4 +1,4 @@
-// PicoArt v32 - StyleSelection (미술사조 12개 확장)
+// PicoArt v32 - StyleSelection (미술사조 10개, 작은 카드 디자인)
 import React, { useState } from 'react';
 import { educationContent } from '../data/educationContent';
 
@@ -6,20 +6,18 @@ const StyleSelection = ({ onSelect }) => {
   const [mainCategory, setMainCategory] = useState('movements'); // movements, masters, oriental
   const [subCategory, setSubCategory] = useState('renaissance');
 
-  // 스타일 카테고리 정의 (v32: 12개 사조)
+  // 스타일 카테고리 정의 (v32: 10개 사조)
   const styleCategories = {
-    // 미술사조 12개
+    // 미술사조 10개
     ancient: { name: '고대 미술', period: 'BC 800 - AD 500' },
     byzantineIslamic: { name: '비잔틴·이슬람', period: '4-14세기' },
     renaissance: { name: '르네상스', period: '14-16세기' },
     baroque: { name: '바로크', period: '17세기' },
     rococo: { name: '로코코', period: '18세기' },
-    neoclassicism: { name: '신고전주의', period: '18세기 후반' },
     romanticism: { name: '낭만주의', period: '19세기 전반' },
     realism: { name: '사실주의', period: '19세기 중반' },
-    impressionism: { name: '인상주의', period: '19세기 후반' },
-    postImpressionism: { name: '후기인상주의', period: '1880-1900년대' },
-    fauvism: { name: '야수파', period: '20세기 초' },
+    impressionism: { name: '인상주의', period: '1860-1890' },
+    postImpressionism: { name: '후기인상주의', period: '1880-1910' },
     expressionism: { name: '표현주의', period: '20세기 초' },
     
     // 거장 (대 카테고리와 소 카테고리 이름 통일)
@@ -29,20 +27,18 @@ const StyleSelection = ({ onSelect }) => {
     oriental: { name: '동양화', period: '한·중·일 전통' }
   };
 
-  // 스타일 데이터 (AI가 자동 선택하므로 최소 정보만) - v32: 12개 사조
+  // 스타일 데이터 (AI가 자동 선택하므로 최소 정보만) - v32: 10개 사조
   const artStyles = [
-    // 미술사조 12개 (시간순)
+    // 미술사조 10개 (시간순)
     { id: 'ancient', name: '고대 미술', category: 'ancient', icon: '🏛️', description: '그리스·로마의 완벽한 균형미' },
     { id: 'byzantineIslamic', name: '비잔틴·이슬람', category: 'byzantineIslamic', icon: '🕌', description: '신성한 황금 모자이크' },
     { id: 'renaissance', name: '르네상스', category: 'renaissance', icon: '🎭', description: '인간 중심의 이상적 아름다움' },
     { id: 'baroque', name: '바로크', category: 'baroque', icon: '👑', description: '극적이고 웅장한 표현' },
     { id: 'rococo', name: '로코코', category: 'rococo', icon: '🌸', description: '우아하고 장식적인 취향' },
-    { id: 'neoclassicism', name: '신고전주의', category: 'neoclassicism', icon: '🏛️', description: '이성과 질서의 부활' },
     { id: 'romanticism', name: '낭만주의', category: 'romanticism', icon: '🌊', description: '감정과 자연의 숭고함' },
     { id: 'realism', name: '사실주의', category: 'realism', icon: '👨‍🌾', description: '있는 그대로의 현실' },
     { id: 'impressionism', name: '인상주의', category: 'impressionism', icon: '🌅', description: '빛의 순간을 포착' },
     { id: 'postImpressionism', name: '후기인상주의', category: 'postImpressionism', icon: '🌻', description: '감정과 구조의 탐구' },
-    { id: 'fauvism', name: '야수파', category: 'fauvism', icon: '🦁', description: '순수하고 강렬한 원색' },
     { id: 'expressionism', name: '표현주의', category: 'expressionism', icon: '😱', description: '내면의 불안과 고독' },
     
     // 거장 6명 (시간순: 출생연도)
@@ -59,13 +55,13 @@ const StyleSelection = ({ onSelect }) => {
     { id: 'japanese', name: '일본 전통 회화', nameEn: 'Japanese Art', category: 'oriental', icon: '🗾', description: '섬세한 관찰과 대담한 생략' }
   ];
 
-  // 대 카테고리 정의 (v32: 12개 사조)
+  // 대 카테고리 정의 (v32: 10개 사조)
   const mainCategories = {
     movements: {
       name: '미술사조',
       icon: '🎨',
       description: '서양 미술의 흐름',
-      subcategories: ['ancient', 'byzantineIslamic', 'renaissance', 'baroque', 'rococo', 'neoclassicism', 'romanticism', 'realism', 'impressionism', 'postImpressionism', 'fauvism', 'expressionism']
+      subcategories: ['ancient', 'byzantineIslamic', 'renaissance', 'baroque', 'rococo', 'romanticism', 'realism', 'impressionism', 'postImpressionism', 'expressionism']
     },
     masters: {
       name: '거장 컬렉션',
@@ -390,21 +386,23 @@ const StyleSelection = ({ onSelect }) => {
 
         .styles-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-          gap: 1.5rem;
+          grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+          gap: 0.75rem;
         }
 
         .style-card {
           background: white;
           border: 2px solid #e2e8f0;
-          padding: 1.5rem;
-          border-radius: 16px;
+          padding: 1rem;
+          border-radius: 12px;
           cursor: pointer;
           transition: all 0.3s;
           display: flex;
           flex-direction: column;
-          gap: 1rem;
-          text-align: left;
+          align-items: center;
+          gap: 0.5rem;
+          text-align: center;
+          min-height: 120px;
         }
 
         .style-card:hover {
@@ -414,64 +412,63 @@ const StyleSelection = ({ onSelect }) => {
         }
 
         .card-icon {
-          font-size: 3rem;
+          font-size: 2rem;
           text-align: center;
         }
 
         .card-content {
           display: flex;
           flex-direction: column;
-          gap: 0.75rem;
+          gap: 0.25rem;
+          width: 100%;
         }
 
         .card-header h3 {
-          font-size: 1.25rem;
+          font-size: 0.95rem;
           color: #2d3748;
           margin: 0;
+          font-weight: 600;
         }
 
         .card-english {
-          font-size: 0.85rem;
+          font-size: 0.7rem;
           color: #718096;
-          margin: 0.25rem 0 0 0;
+          margin: 0;
         }
 
         .artist-info {
           display: flex;
           flex-direction: column;
-          gap: 0.25rem;
-          padding: 0.75rem;
-          background: #f7fafc;
-          border-radius: 8px;
+          gap: 0.15rem;
+          font-size: 0.7rem;
+          color: #718096;
         }
 
         .artist-name {
-          font-size: 0.95rem;
+          font-size: 0.7rem;
           font-weight: 600;
           color: #4a5568;
         }
 
         .artist-lifespan {
-          font-size: 0.8rem;
+          font-size: 0.65rem;
           color: #a0aec0;
         }
 
         .card-description {
-          font-size: 0.9rem;
+          font-size: 0.7rem;
           color: #4a5568;
-          line-height: 1.5;
+          line-height: 1.4;
           margin: 0;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
         }
 
         .model-badge {
-          display: inline-block;
-          padding: 0.4rem 0.8rem;
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          color: white;
-          border-radius: 20px;
-          font-size: 0.75rem;
-          font-weight: 600;
-          align-self: flex-start;
+          display: none;
         }
 
         /* 모바일 반응형 */
@@ -518,12 +515,25 @@ const StyleSelection = ({ onSelect }) => {
           }
 
           .styles-grid {
-            grid-template-columns: 1fr;
-            gap: 1rem;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
           }
 
           .style-card {
-            padding: 1.25rem;
+            padding: 0.75rem;
+            min-height: 100px;
+          }
+
+          .card-icon {
+            font-size: 1.5rem;
+          }
+
+          .card-header h3 {
+            font-size: 0.85rem;
+          }
+
+          .card-description {
+            font-size: 0.65rem;
           }
         }
       `}</style>

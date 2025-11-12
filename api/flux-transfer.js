@@ -1,19 +1,17 @@
-// PicoArt v32 - Art Movements Expanded to 12
-// v32: 미술사조 12개 (교육적 완성도 + 시각적 차별성 + 거장 시너지)
+// PicoArt v32 - Art Movements 10 (Practical Selection)
+// v32: 미술사조 10개 (교육적 완성도 + 시각적 차별성 + 실용성)
 //
-// 미술사조 12개 (시간순):
+// 미술사조 10개 (시간순):
 //   1. 고대 그리스-로마 (BC 800~AD 400)
 //   2. 비잔틴·이슬람 (4~15세기)
 //   3. 르네상스 (1400~1600)
 //   4. 바로크 (1600~1750)
 //   5. 로코코 (1720~1780)
-//   6. 신고전주의 (1770~1840) ⭐ NEW
-//   7. 낭만주의 (1800~1850)
-//   8. 사실주의 (1840~1870) ⭐ NEW
-//   9. 인상주의 (1860~1890)
-//  10. 후기인상주의 (1880~1910)
-//  11. 야수파 (1905~1910)
-//  12. 표현주의 (1905~1920)
+//   6. 낭만주의 (1800~1850)
+//   7. 사실주의 (1840~1870)
+//   8. 인상주의 (1860~1890)
+//   9. 후기인상주의 (1880~1910)
+//  10. 표현주의 (1905~1920)
 //
 // 거장 6명 (시간순 + 생사연도):
 //   1. 반 고흐 (1853-1890, 후기인상주의)
@@ -55,11 +53,6 @@ const fallbackPrompts = {
     prompt: 'Rococo painting style, light pastel colors, playful ornate decoration, soft delicate brushwork, romantic elegant atmosphere, graceful curved lines, whimsical charm, painted in Rococo masterpiece quality'
   },
   
-  neoclassicism: {
-    name: '신고전주의',
-    prompt: 'Neoclassical painting style, clean precise lines, smooth marble-like surfaces, idealized classical forms, balanced symmetrical composition, clear rational structure, heroic noble subjects, muted dignified colors, inspired by ancient Greek and Roman art, painted in Neoclassical masterpiece quality by Jacques-Louis David'
-  },
-  
   romanticism: {
     name: '낭만주의',
     prompt: 'Romantic painting style, dramatic emotional intensity, sublime natural beauty, vivid expressive colors, dynamic turbulent composition, passionate atmosphere, painted in Romantic masterpiece quality'
@@ -78,11 +71,6 @@ const fallbackPrompts = {
   postImpressionism: {
     name: '후기인상주의',
     prompt: 'Post-Impressionist painting style, bold expressive colors, geometric structured forms, emotional symbolic content, innovative personal vision, painted in Post-Impressionist masterpiece quality'
-  },
-  
-  fauvism: {
-    name: '야수파',
-    prompt: 'Fauvist painting style, wild pure vivid colors, bold simplified forms, strong non-naturalistic palette, flat decorative patterns, expressive emotional intensity, painted in Fauvist masterpiece quality'
   },
   
   expressionism: {
