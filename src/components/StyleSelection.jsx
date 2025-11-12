@@ -4,7 +4,7 @@ import { educationContent } from '../data/educationContent';
 
 const StyleSelection = ({ onSelect }) => {
   const [mainCategory, setMainCategory] = useState('movements'); // movements, masters, oriental
-  const [subCategory, setSubCategory] = useState('renaissance');
+  const [subCategory, setSubCategory] = useState(null);
 
   // 스타일 카테고리 정의 (v32: 10개 사조)
   const styleCategories = {
