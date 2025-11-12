@@ -167,7 +167,6 @@ const StyleSelection = ({ onSelect }) => {
                     {styleData?.icon && <span className="tab-icon">{styleData.icon}</span>}
                     <span className="tab-name">{category.name}</span>
                     <span className="tab-period">{category.period}</span>
-                    <span className="tab-count">{getCategoryCount(key)}개</span>
                   </button>
                 );
               })}
