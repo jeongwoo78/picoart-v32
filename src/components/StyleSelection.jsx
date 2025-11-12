@@ -141,11 +141,13 @@ const StyleSelection = ({ onSelect }) => {
           </div>
         </div>
 
-        {/* 2단계: 소 카테고리 선택 (탭) */}
+        {/* 2단계: 소 카테고리 선택 (탭) - 미술사조만 표시 */}
+        {mainCategory === 'movements' && (
         <div className="sub-category-nav">
           <div className="sub-category-tabs">
             {currentSubcategories.map(key => {
               const category = styleCategories[key];
+              const styleData = artStyles.find(s => s.id === key || s.category === key);
               if (!category) {
                 console.error(`Category not found: ${key}`);
                 return null;
@@ -156,6 +158,7 @@ const StyleSelection = ({ onSelect }) => {
                   className={`sub-category-tab ${subCategory === key ? 'active' : ''}`}
                   onClick={() => handleSubCategoryClick(key)}
                 >
+                  {styleData?.icon && <span className="tab-icon">{styleData.icon}</span>}
                   <span className="tab-name">{category.name}</span>
                   <span className="tab-period">{category.period}</span>
                   <span className="tab-count">{getCategoryCount(key)}개</span>
@@ -164,6 +167,7 @@ const StyleSelection = ({ onSelect }) => {
             })}
           </div>
         </div>
+        )}
 
         {/* 3단계: 개별 화가/스타일 선택 (거장과 동양화만 표시) */}
         {mainCategory !== 'movements' && (
@@ -309,52 +313,68 @@ const StyleSelection = ({ onSelect }) => {
 
         .sub-category-tabs {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-          gap: 0.75rem;
+          grid-template-columns: repeat(5, 1fr);
+          gap: 1rem;
         }
 
         .sub-category-tab {
-          background: rgba(255, 255, 255, 0.15);
-          border: 2px solid rgba(255, 255, 255, 0.3);
-          color: white;
-          padding: 1rem;
-          border-radius: 12px;
+          background: white;
+          border: 2px solid #e2e8f0;
+          color: #2d3748;
+          padding: 1.25rem 1rem;
+          border-radius: 16px;
           cursor: pointer;
           transition: all 0.3s;
           display: flex;
           flex-direction: column;
           align-items: center;
-          gap: 0.25rem;
-          backdrop-filter: blur(10px);
+          gap: 0.5rem;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
 
         .sub-category-tab:hover {
-          background: rgba(255, 255, 255, 0.25);
-          transform: translateY(-2px);
+          border-color: #667eea;
+          box-shadow: 0 8px 20px rgba(102, 126, 234, 0.2);
+          transform: translateY(-4px);
         }
 
         .sub-category-tab.active {
-          background: rgba(255, 255, 255, 0.3);
-          border-color: rgba(255, 255, 255, 0.7);
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          border-color: #667eea;
+          color: white;
+          box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+        }
+
+        .sub-category-tab .tab-icon {
+          font-size: 2.5rem;
         }
 
         .sub-category-tab .tab-name {
-          font-size: 1rem;
-          font-weight: 600;
+          font-size: 1.05rem;
+          font-weight: 700;
         }
 
         .sub-category-tab .tab-period {
-          font-size: 0.75rem;
-          opacity: 0.85;
+          font-size: 0.8rem;
+          opacity: 0.75;
+        }
+
+        .sub-category-tab.active .tab-period {
+          opacity: 0.95;
         }
 
         .sub-category-tab .tab-count {
-          font-size: 0.8rem;
-          padding: 0.15rem 0.5rem;
-          background: rgba(255, 255, 255, 0.2);
-          border-radius: 10px;
+          font-size: 0.75rem;
+          padding: 0.25rem 0.6rem;
+          background: rgba(102, 126, 234, 0.1);
+          border-radius: 12px;
           margin-top: 0.25rem;
+          font-weight: 600;
+        }
+
+        .sub-category-tab.active .tab-count {
+          background: rgba(255, 255, 255, 0.25);
+          color: white;
         }
 
         /* 3단계: 화가 선택 */
