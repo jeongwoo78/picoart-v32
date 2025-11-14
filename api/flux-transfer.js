@@ -447,6 +447,7 @@ async function selectArtistWithAI(imageBase64, selectedStyle, timeoutMs = 8000) 
   try {
     // 모든 카테고리 동일 로직: AI가 사진 분석 후 최적 세부 스타일 선택
     let promptText;
+    let isCustomPrompt = false;  // 커스텀 프롬프트 사용 여부
     
     const categoryName = selectedStyle.name;
     const categoryType = selectedStyle.category;
@@ -604,8 +605,6 @@ Keep it concise and accurate.`;
       
       const movementKey = selectedStyle.id.replace('-movement', '');
       const customPrompt = movementPrompts[movementKey];
-      
-      let isCustomPrompt = false;
       
       if (customPrompt) {
         // v33: 우리가 만든 맞춤 프롬프트 사용
