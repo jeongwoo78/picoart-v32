@@ -252,23 +252,23 @@ Keep it concise and accurate.`;
 
 // v34: 화가별 고정 템플릿 (100% 일관성 보장)
 const renaissanceArtistTemplates = {
-  "Leonardo da Vinci": "extreme sfumato technique with soft blurred edges and NO sharp outlines anywhere, smoky atmospheric haze with gentle gradual transitions, mysterious enigmatic expression, muted earth tones with subtle modeling, Leonardo da Vinci's scientific precision in anatomy",
+  "Leonardo da Vinci": "extreme sfumato technique with soft blurred edges and NO sharp outlines anywhere, smoky atmospheric haze with gentle gradual transitions, mysterious enigmatic expression, muted earth tones with subtle modeling, Leonardo da Vinci's scientific precision in anatomy, single unified composition maintaining spatial coherence",
   
-  "Michelangelo": "sculptural three-dimensional forms with strong defined contours, dramatic chiaroscuro lighting, powerfully defined muscular anatomy with visible muscles and tendons, heroic monumental composition, Michelangelo's divine power in human form",
+  "Michelangelo": "sculptural three-dimensional forms with strong defined contours, dramatic chiaroscuro lighting, powerfully defined muscular anatomy with visible muscles and tendons, heroic monumental composition, Michelangelo's divine power in human form, continuous unified scene with all figures in single cohesive space",
   
-  "Titian": "rich Venetian color palette with deep reds and luminous golden yellows, visible loose expressive brushstrokes, luminous layered glazes creating depth, warm glowing atmosphere, Titian's sensual beauty in oil painting",
+  "Titian": "rich Venetian color palette with deep reds and luminous golden yellows, visible loose expressive brushstrokes, luminous layered glazes creating depth, warm glowing atmosphere, Titian's sensual beauty in oil painting, single unified composition with all figures together in one cohesive scene, NOT multiple separate groups or layers",
   
-  "Botticelli": "clear elegant contour lines defining forms, flowing linear rhythms throughout composition, idealized graceful elongated proportions, delicate pale luminous skin tones, flowing drapery and hair with lyrical quality, Botticelli's ethereal Renaissance grace"
+  "Botticelli": "clear elegant contour lines defining forms, flowing linear rhythms throughout composition, idealized graceful elongated proportions, delicate pale luminous skin tones, flowing drapery and hair with lyrical quality, Botticelli's ethereal Renaissance grace, harmonious unified composition with figures in single continuous space"
 };
 
 const baroqueArtistTemplates = {
-  "Caravaggio": "extreme tenebrism with 75-85% of canvas in pitch black shadows, single dramatic spotlight from upper left corner, NO ambient fill light anywhere, theatrical chiaroscuro with stark contrast, raw gritty realism, Caravaggio's dramatic Baroque intensity",
+  "Caravaggio": "extreme tenebrism with 75-85% of canvas in pitch black shadows, single dramatic spotlight from upper left corner, NO ambient fill light anywhere, theatrical chiaroscuro with stark contrast, raw gritty realism, Caravaggio's dramatic Baroque intensity, unified dramatic scene with continuous spatial composition",
   
-  "Rembrandt": "warm golden glowing light emanating from within, soft atmospheric luminosity with gentle transitions, NO harsh shadows, warm amber and golden brown tones throughout, deep psychological insight visible in eyes and expression, Rembrandt's humanitarian warmth",
+  "Rembrandt": "warm golden glowing light emanating from within, soft atmospheric luminosity with gentle transitions, NO harsh shadows, warm amber and golden brown tones throughout, deep psychological insight visible in eyes and expression, Rembrandt's humanitarian warmth, cohesive unified composition with figures in single harmonious space",
   
-  "Rubens": "swirling diagonal dynamic composition, rich saturated warm colors with reds and golds, dynamic curved flowing forms suggesting movement, visible energetic expressive brushstrokes, abundant vitality and life force, full robust figures, Rubens' Baroque exuberance",
+  "Rubens": "swirling diagonal dynamic composition, rich saturated warm colors with reds and golds, dynamic curved flowing forms suggesting movement, visible energetic expressive brushstrokes, abundant vitality and life force, full robust figures, Rubens' Baroque exuberance, single continuous scene with unified spatial depth, NOT fragmented into separate groups",
   
-  "Velázquez": "elegant restrained composition with sophisticated atmospheric perspective, soft blended brushwork creating subtle tonal transitions, refined muted color palette with grays and silvers, dignified composed poses, spatial depth through atmosphere, Velázquez's courtly dignity"
+  "Velázquez": "elegant restrained composition with sophisticated atmospheric perspective, soft blended brushwork creating subtle tonal transitions, refined muted color palette with grays and silvers, dignified composed poses, spatial depth through atmosphere, Velázquez's courtly dignity, unified continuous scene maintaining spatial coherence"
 };
 
 // 바로크 프롬프트
@@ -446,17 +446,17 @@ const fallbackPrompts = {
   // ========================================
   korean: {
     name: '한국 전통화',
-    prompt: 'Korean traditional painting in authentic Joseon Dynasty style. CRITICAL INSTRUCTIONS: 1) GENDER PRESERVATION - carefully preserve exact gender and facial features from original photo (male stays male with masculine face, female stays female with feminine features), 2) Choose appropriate Korean style based on photo subject (Minhwa folk art for animals/flowers with bold outlines and bright Obangsaek colors, Pungsokdo genre painting for people/daily life with refined brushwork, Jingyeong landscape for nature/mountains with expressive ink), 3) Use Korean aesthetic sensibility. ABSOLUTELY NO Japanese hiragana (ひらがな) or katakana (カタカナ). This is PURE KOREAN ART, not Japanese ukiyo-e.'
+    prompt: 'Korean traditional painting in authentic Joseon Dynasty style. CRITICAL INSTRUCTIONS: 1) GENDER PRESERVATION - carefully preserve exact gender and facial features from original photo (male stays male with masculine face, female stays female with feminine features), 2) Choose appropriate Korean style based on photo subject (Minhwa folk art for animals/flowers with bold outlines and bright Obangsaek colors, Pungsokdo genre painting for people/daily life with refined brushwork, Jingyeong landscape for nature/mountains with expressive ink), 3) Use Korean aesthetic sensibility, 4) SINGLE UNIFIED COMPOSITION - all figures and elements together in one cohesive harmonious scene, NOT separated into multiple distinct groups or layers. ABSOLUTELY NO Japanese hiragana (ひらがな) or katakana (カタカナ). This is PURE KOREAN ART, not Japanese ukiyo-e.'
   },
   
   chinese: {
     name: '중국 전통화',
-    prompt: 'Chinese traditional painting in authentic classical style. CRITICAL INSTRUCTIONS: 1) GENDER PRESERVATION - carefully preserve exact gender and facial features from original photo (male stays male with masculine face, female stays female with feminine features), 2) Choose appropriate Chinese style based on photo subject (Shuimohua ink wash for landscapes/nature with monochrome gradations, Gongbi meticulous painting for people/portraits with fine detailed brushwork and rich colors, Huaniao bird-and-flower for animals/plants with precise naturalistic rendering), 3) Use Chinese aesthetic principles. ABSOLUTELY NO Japanese hiragana (ひらがな) or katakana (カタカナ). This is PURE CHINESE ART.'
+    prompt: 'Chinese traditional painting in authentic classical style. CRITICAL INSTRUCTIONS: 1) GENDER PRESERVATION - carefully preserve exact gender and facial features from original photo (male stays male with masculine face, female stays female with feminine features), 2) Choose appropriate Chinese style based on photo subject (Shuimohua ink wash for landscapes/nature with monochrome gradations, Gongbi meticulous painting for people/portraits with fine detailed brushwork and rich colors, Huaniao bird-and-flower for animals/plants with precise naturalistic rendering), 3) Use Chinese aesthetic principles, 4) SINGLE UNIFIED COMPOSITION - all figures and elements together in one cohesive continuous scene, NOT fragmented into separate layers or groups. ABSOLUTELY NO Japanese hiragana (ひらがな) or katakana (カタカナ). This is PURE CHINESE ART.'
   },
   
   japanese: {
     name: '일본 우키요에',
-    prompt: 'Japanese Ukiyo-e woodblock print style with flat areas of bold solid colors, strong clear black outlines, completely flat two-dimensional composition, decorative patterns, stylized simplified forms, elegant refined Japanese aesthetic, painted in authentic Japanese ukiyo-e masterpiece quality, Japanese kana allowed, NO Chinese characters, pure Japanese style only'
+    prompt: 'Japanese Ukiyo-e woodblock print style with flat areas of bold solid colors, strong clear black outlines, completely flat two-dimensional composition, decorative patterns, stylized simplified forms, elegant refined Japanese aesthetic, painted in authentic Japanese ukiyo-e masterpiece quality, single unified composition with all figures together in one cohesive scene NOT separated into multiple distinct groups, Japanese kana allowed, NO Chinese characters, pure Japanese style only'
   },
   
   masters: {
