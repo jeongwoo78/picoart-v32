@@ -279,29 +279,25 @@ You must choose ONE of these FOUR masters:
 Master 1: Caravaggio (카라바조, 1571-1610)
 - Best mood: Dramatic, intense, theatrical, raw
 - Best for: strong contrasts, dramatic lighting, intense emotions, raw realism
-- Characteristics: EXTREME tenebrism with 70-80% of canvas in pitch black shadows, single theatrical spotlight from upper corner, NO ambient light, dramatic spotlight effect, gritty raw realism, strong directional light
-- FLUX keywords: "extreme tenebrism, 80% pitch black shadows, single dramatic spotlight from upper left, NO ambient fill light, theatrical chiaroscuro, raw gritty realism, strong directional lighting"
+- Characteristics: extreme tenebrism with 75-85% pitch black shadows, single dramatic spotlight from upper corner, NO ambient light, theatrical chiaroscuro, raw gritty realism
 - Signature feeling: "Raw drama in stark light and shadow"
 
 Master 2: Rembrandt (렘브란트, 1606-1669)
 - Best mood: Warm, introspective, contemplative, humanistic
 - Best for: portraits, elderly subjects, quiet dignity, inner emotions, warm atmospheres
-- Characteristics: warm golden glowing light from within, soft atmospheric luminosity, NO harsh shadows, gentle transitions, deep psychological insight through eyes and expression, warm amber and golden brown tones, gentle humanity
-- FLUX keywords: "warm golden glowing light, soft atmospheric glow with gentle transitions, NO harsh shadows, warm amber and brown tones, psychological depth in eyes, soft luminous quality"
+- Characteristics: warm golden glowing light, soft atmospheric luminosity, NO harsh shadows, gentle transitions, warm amber and brown tones, deep psychological insight
 - Signature feeling: "Warm humanity and inner light"
 
 Master 3: Rubens (루벤스, 1577-1640)
 - Best mood: Dynamic, exuberant, celebratory, energetic
 - Best for: movement, energy, full figures, celebrations, dynamic compositions
-- Characteristics: swirling diagonal compositions, rich warm saturated colors (reds, golds, flesh tones), dynamic movement with curved flowing forms, abundant vitality, visible energetic brushwork, full-bodied robust figures
-- FLUX keywords: "swirling diagonal composition, rich saturated warm colors, dynamic curved flowing forms, visible energetic brushstrokes, abundant vitality, full robust figures"
+- Characteristics: swirling diagonal composition, rich saturated warm colors with reds and golds, dynamic curved flowing forms, visible energetic brushstrokes, abundant vitality
 - Signature feeling: "Exuberant life force and dynamic energy"
 
 Master 4: Velázquez (벨라스케스, 1599-1660)
 - Best mood: Elegant, dignified, refined, sophisticated
 - Best for: formal portraits, elegant poses, sophisticated compositions, dignified subjects
-- Characteristics: elegant restraint with subtle tonal transitions, sophisticated atmospheric perspective, soft blended brushwork creating spatial depth, refined muted color palette (grays, silvers, muted tones), dignified composed poses
-- FLUX keywords: "elegant restrained composition, sophisticated atmospheric perspective, soft blended subtle transitions, refined muted color palette with grays and silvers, dignified poses, spatial depth"
+- Characteristics: elegant restrained composition, sophisticated atmospheric perspective, soft blended brushwork, refined muted palette with grays and silvers, dignified poses
 - Signature feeling: "Elegant dignity and sophisticated grace"
 
 SELECTION STRATEGY (분위기 우선):
@@ -336,10 +332,8 @@ Return ONLY valid JSON (no markdown):
   "selected_artist": "Caravaggio" or "Rembrandt" or "Rubens" or "Velázquez",
   "selected_style": "caravaggio" or "rembrandt" or "rubens" or "velazquez",
   "reason": "why this master's signature feeling matches the photo's mood",
-  "prompt": "Baroque painting by [Master name], [USE THE SPECIFIC FLUX KEYWORDS FROM THAT MASTER'S DESCRIPTION], portraying the SAME PERSON from the photo while capturing their distinctive facial features, depicting the subject while preserving original composition"
+  "prompt": "Baroque painting by [Master name], [master's distinctive technique], portraying the SAME PERSON from the photo while capturing their distinctive facial features, depicting the subject while preserving original composition"
 }
-
-CRITICAL: Your prompt MUST include the specific FLUX keywords for the selected master to ensure visual distinction.
 
 Keep it concise and accurate.`;
 
@@ -347,22 +341,22 @@ Keep it concise and accurate.`;
 const fallbackPrompts = {
   ancient: {
     name: '고대 그리스-로마',
-    prompt: 'ancient Greek and Roman classical painting style, idealized human forms, marble-like smooth rendering, heroic noble figures, classical drapery, temple architecture, serene dignified expressions, painted in ancient classical masterpiece quality'
+    prompt: 'ancient Greek and Roman classical painting style, idealized human forms, marble-like smooth rendering, heroic noble figures, classical drapery, temple architecture, serene dignified expressions, single unified composition with all figures in one cohesive harmonious scene, painted in ancient classical masterpiece quality'
   },
   
   byzantineIslamic: {
     name: '비잔틴·이슬람',
-    prompt: 'Byzantine and Islamic art style, golden mosaic backgrounds, ornate geometric patterns, rich jewel-like colors, spiritual iconic forms, decorative arabesque motifs, sacred dignified atmosphere, painted in Byzantine-Islamic masterpiece quality'
+    prompt: 'Byzantine and Islamic art style, golden mosaic backgrounds, ornate geometric patterns, rich jewel-like colors, spiritual iconic forms, decorative arabesque motifs, sacred dignified atmosphere, single unified composition with all elements in one cohesive harmonious scene, painted in Byzantine-Islamic masterpiece quality'
   },
   
   renaissance: {
     name: '르네상스',
-    prompt: 'Renaissance painting style, soft sfumato technique, harmonious balanced composition, warm golden Renaissance colors, detailed naturalistic rendering, gentle serene expressions, classical perspective, painted in Renaissance masterpiece quality'
+    prompt: 'Renaissance painting style, soft sfumato technique, harmonious balanced composition, warm golden Renaissance colors, detailed naturalistic rendering, gentle serene expressions, classical perspective, single unified composition with all figures in one cohesive harmonious space, painted in Renaissance masterpiece quality'
   },
   
   baroque: {
     name: '바로크',
-    prompt: 'Baroque painting style, dramatic chiaroscuro lighting, rich deep colors, dynamic diagonal composition, theatrical emotional atmosphere, strong contrast between light and shadow, painted in Baroque masterpiece quality'
+    prompt: 'Baroque painting style, dramatic chiaroscuro lighting, rich deep colors, dynamic diagonal composition, theatrical emotional atmosphere, strong contrast between light and shadow, single unified composition with all figures together in one cohesive continuous scene NOT separated into multiple groups, painted in Baroque masterpiece quality'
   },
   
   rococo: {
