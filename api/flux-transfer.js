@@ -822,22 +822,19 @@ export default async function handler(req, res) {
         };
         console.log('✅ AI selected:', selectedArtist);
         
-        // v34: 화가별 고정 템플릿 사용 (100% 일관성)
+        // v35: 화가별 고정 템플릿 사용 (100% 일관성)
         let artistTemplate = null;
         
-        if (selectedStyle.category === 'movements') {
-          const movementId = selectedStyle.id.replace('-movement', '');
-          
-          if (movementId === 'renaissance') {
-            artistTemplate = renaissanceArtistTemplates[selectedArtist];
-            if (artistTemplate) {
-              console.log('✅ Using Renaissance template for:', selectedArtist);
-            }
-          } else if (movementId === 'baroque') {
-            artistTemplate = baroqueArtistTemplates[selectedArtist];
-            if (artistTemplate) {
-              console.log('✅ Using Baroque template for:', selectedArtist);
-            }
+        // selectedStyle.id로 직접 확인 (category는 다양할 수 있음)
+        if (selectedStyle.id === 'renaissance' || selectedStyle.id === 'renaissance-movement') {
+          artistTemplate = renaissanceArtistTemplates[selectedArtist];
+          if (artistTemplate) {
+            console.log('✅ Using Renaissance template for:', selectedArtist);
+          }
+        } else if (selectedStyle.id === 'baroque' || selectedStyle.id === 'baroque-movement') {
+          artistTemplate = baroqueArtistTemplates[selectedArtist];
+          if (artistTemplate) {
+            console.log('✅ Using Baroque template for:', selectedArtist);
           }
         }
         
