@@ -605,10 +605,13 @@ Keep it concise and accurate.`;
       const movementKey = selectedStyle.id.replace('-movement', '');
       const customPrompt = movementPrompts[movementKey];
       
+      let isCustomPrompt = false;
+      
       if (customPrompt) {
         // v33: 우리가 만든 맞춤 프롬프트 사용
         console.log(`✅ Using custom prompt for ${categoryName}`);
         promptText = customPrompt;
+        isCustomPrompt = true;
       } else {
         // Fallback: 아직 맞춤 프롬프트 없는 사조 (로코코, 낭만주의 등)
         console.log(`⚠️ No custom prompt for ${categoryName}, using generic`);
@@ -687,7 +690,8 @@ Keep it concise and accurate.`;
       artist: result.selected_artist,
       reason: result.reason,
       prompt: result.prompt,
-      analysis: result.analysis
+      analysis: result.analysis,
+      isCustomPrompt: isCustomPrompt
     };
     
   } catch (error) {
@@ -780,7 +784,7 @@ export default async function handler(req, res) {
         // AI 성공!
         finalPrompt = aiResult.prompt;
         selectedArtist = aiResult.artist;
-        selectionMethod = 'ai_auto';
+        selectionMethod = aiResult.isCustomPrompt ? 'ai_custom_prompt' : 'ai_auto';
         selectionDetails = {
           analysis: aiResult.analysis,
           reason: aiResult.reason
