@@ -26,11 +26,289 @@
 // FLUX renders with selected style
 // ========================================
 
-// v33: 사조별 AI 선택 프롬프트 import
-import ancientPrompt from '../src/prompts/ancient-selection.js';
-import byzantineIslamicPrompt from '../src/prompts/byzantine-islamic-selection.js';
-import renaissancePrompt from '../src/prompts/renaissance-selection.js';
-import baroquePrompt from '../src/prompts/baroque-selection.js';
+// v33: 사조별 AI 선택 프롬프트 (직접 포함)
+// Import 방식은 Vercel 서버리스 환경에서 불안정하므로 직접 포함
+
+// 고대 그리스-로마 프롬프트
+const ancientPrompt = `Analyze this photo and select the BEST Ancient Greco-Roman art style based on OVERALL MOOD.
+
+You must choose ONE of these FOUR styles:
+
+Style 1: Greek Vase Painting (그리스 항아리화, BC 800-300)
+- Best mood: Mythological, heroic, classical, profile-oriented
+- Best for: profile views, animals, mythological scenes, silhouettes, side-facing subjects
+- Characteristics: black or red figure style, clear outlines, flat two-dimensional, narrative scenes
+- Signature feeling: "Heroic mythology captured in timeless profile"
+
+Style 2: Pompeii Fresco (폼페이 프레스코, BC 100 - AD 79)
+- Best mood: Lively, intimate, everyday, dramatic
+- Best for: portraits, people in action, indoor scenes, dramatic moments, facial expressions
+- Characteristics: soft naturalistic colors (reds/ochres/greens), three-dimensional depth, lively expressions
+- Signature feeling: "Vivid everyday life frozen in time"
+
+Style 3: Pompeii Garden Painting (폼페이 정원화, BC 1st century)
+- Best mood: Peaceful, natural, idyllic, pastoral
+- Best for: landscapes, nature, plants, flowers, birds, gardens, outdoor scenes
+- Characteristics: lush greenery, birds and fruits, panoramic nature, peaceful garden atmosphere
+- Signature feeling: "Serene nature and garden paradise"
+
+Style 4: Roman Mosaic (로마 모자이크, BC 200 - AD 400)
+- Best mood: Formal, monumental, decorative, eternal
+- Best for: group photos, formal compositions, ceremonial scenes, decorative patterns
+- Characteristics: small tile (tessera) texture, decorative borders, formal balanced composition, permanent grandeur
+- Signature feeling: "Eternal grandeur in stone"
+
+SELECTION STRATEGY (분위기 우선):
+
+1. IDENTIFY THE DOMINANT MOOD:
+   - Mythological/heroic/profile → Greek Vase
+   - Lively/dramatic/intimate → Pompeii Fresco
+   - Peaceful/natural/pastoral → Pompeii Garden
+   - Formal/monumental/ceremonial → Roman Mosaic
+
+2. For COMPLEX photos:
+   - Focus on the OVERALL ATMOSPHERE
+   - Example: Person in garden → If peaceful nature dominates: Pompeii Garden
+   - Example: Group in formal pose → If ceremonial feeling dominates: Roman Mosaic
+   - Example: Dramatic facial expression → If lively emotion dominates: Pompeii Fresco
+
+3. SUBJECT TYPE HINTS (but mood is priority):
+   - Side profile or animal → consider Greek Vase
+   - Face-forward portrait → consider Pompeii Fresco or Roman Mosaic
+   - Nature/plants dominant → consider Pompeii Garden
+   - Multiple people formally arranged → consider Roman Mosaic
+
+CRITICAL INSTRUCTION FOR FACIAL PRESERVATION:
+When photo contains person(s), your generated prompt MUST include:
+"portraying the SAME PERSON from the photo while capturing their distinctive facial features"
+
+This ensures the person remains recognizable while only the painting style changes.
+The person's ethnicity, facial structure, and identity must be preserved.
+
+Return ONLY valid JSON (no markdown):
+{
+  "analysis": "brief description of photo's dominant mood and main subject",
+  "selected_artist": "Greek Vase Painting" or "Pompeii Fresco" or "Pompeii Garden Painting" or "Roman Mosaic",
+  "selected_style": "greek_vase" or "pompeii_fresco" or "pompeii_garden" or "roman_mosaic",
+  "reason": "why this style's signature feeling matches the photo's mood",
+  "prompt": "Ancient [style name], [distinctive characteristics emphasizing the mood], portraying the SAME PERSON from the photo while capturing their distinctive facial features, depicting the subject while preserving original composition"
+}
+
+Keep it concise and accurate.`;
+
+// 비잔틴·이슬람 프롬프트
+const byzantineIslamicPrompt = `Analyze this photo and select the BEST Byzantine-Islamic art style based on OVERALL MOOD.
+
+You must choose ONE of these FIVE styles:
+
+Style 1: Byzantine Icon (비잔틴 성상화, 4-15th century)
+- Best mood: Sacred, eternal, frontal, spiritual
+- Best for: frontal portraits, face-centered, direct gaze, spiritual subjects
+- Characteristics: gold background, large expressive eyes, flat frontal composition, divine presence
+- Signature feeling: "Sacred window to heaven"
+
+Style 2: Byzantine Mosaic (비잔틴 모자이크, 5-14th century)
+- Best mood: Majestic, glorious, monumental, celestial
+- Best for: groups, landscapes with architecture, grand scenes, ceremonial compositions
+- Characteristics: golden glass tessera, light-reflecting shimmer, monumental scale, heavenly grandeur
+- Signature feeling: "Glorious golden radiance of heaven"
+
+Style 3: Persian Miniature (페르시아 세밀화, 13-17th century)
+- Best mood: Epic, narrative, heroic, courtly
+- Best for: people in action, dramatic scenes, battles, court life, storytelling moments
+- Characteristics: intricate details, rich colors, decorative borders, narrative compositions, Persian epic style
+- Signature feeling: "Epic tales told in exquisite detail"
+
+Style 4: Mughal Miniature (무굴 세밀화, 16-18th century)
+- Best mood: Natural, peaceful, paradise-like, observational
+- Best for: flowers, birds, animals, gardens, nature close-ups, botanical subjects
+- Characteristics: naturalistic observation, delicate details, symmetrical gardens, paradise imagery, life celebration
+- Signature feeling: "Earthly paradise of natural beauty"
+
+Style 5: Islamic Geometric (이슬람 기하학 문양, 8th century onward)
+- Best mood: Abstract, mathematical, infinite, ordered
+- Best for: patterns, symmetrical compositions, architectural subjects, decorative scenes
+- Characteristics: geometric patterns, perfect symmetry, infinite tessellation, arabesque motifs, mathematical beauty
+- Signature feeling: "Divine infinity in geometric order"
+
+SELECTION STRATEGY (분위기 우선):
+
+1. IDENTIFY THE DOMINANT MOOD:
+   - Sacred/spiritual/frontal gaze → Byzantine Icon
+   - Majestic/grand/monumental → Byzantine Mosaic
+   - Epic/narrative/dramatic → Persian Miniature
+   - Natural/peaceful/botanical → Mughal Miniature
+   - Abstract/patterned/geometric → Islamic Geometric
+
+2. For COMPLEX photos:
+   - Focus on the PRIMARY ATMOSPHERE
+   - Example: Portrait with religious feeling → Byzantine Icon
+   - Example: Group in palace → If narrative: Persian / If majestic: Byzantine Mosaic
+   - Example: Flowers in garden → Mughal Miniature
+   - Example: Building with patterns → Islamic Geometric
+
+3. SUBJECT TYPE HINTS (but mood is priority):
+   - Single frontal portrait → consider Byzantine Icon
+   - Grand scene with multiple elements → consider Byzantine Mosaic
+   - People in dramatic action → consider Persian Miniature
+   - Natural subjects (flowers/birds/animals) → consider Mughal Miniature
+   - Symmetrical/patterned composition → consider Islamic Geometric
+
+4. CULTURAL DISTINCTION:
+   - Byzantine (1-2): Christian religious, gold-focused, Western influence
+   - Persian (3): Islamic Persian, narrative epic, court culture
+   - Mughal (4): Islamic Indian, nature-focused, garden paradise
+   - Islamic Geometric (5): Pan-Islamic, abstract, architectural
+
+CRITICAL INSTRUCTION FOR FACIAL PRESERVATION:
+When photo contains person(s), your generated prompt MUST include:
+"portraying the SAME PERSON from the photo while capturing their distinctive facial features"
+
+This ensures the person remains recognizable while only the painting style changes.
+The person's ethnicity, facial structure, and identity must be preserved.
+
+Return ONLY valid JSON (no markdown):
+{
+  "analysis": "brief description of photo's dominant mood and main subject",
+  "selected_artist": "Byzantine Icon" or "Byzantine Mosaic" or "Persian Miniature" or "Mughal Miniature" or "Islamic Geometric",
+  "selected_style": "byzantine_icon" or "byzantine_mosaic" or "persian_miniature" or "mughal_miniature" or "islamic_geometric",
+  "reason": "why this style's signature feeling matches the photo's mood",
+  "prompt": "[Style name], [distinctive characteristics emphasizing the mood], portraying the SAME PERSON from the photo while capturing their distinctive facial features, depicting the subject while preserving original composition"
+}
+
+Keep it concise and accurate.`;
+
+// 르네상스 프롬프트
+const renaissancePrompt = `Analyze this photo and select the BEST Renaissance master based on OVERALL MOOD.
+
+You must choose ONE of these FOUR masters:
+
+Master 1: Leonardo da Vinci (레오나르도 다 빈치, 1452-1519)
+- Best mood: Mysterious, contemplative, intellectual, serene
+- Best for: portraits with enigmatic expressions, subtle emotions, intellectual subjects
+- Characteristics: sfumato (soft smoky edges), mysterious smile, gentle atmospheric perspective, scientific precision
+- Signature feeling: "Mysterious beauty through perfect science"
+
+Master 2: Michelangelo (미켈란젤로, 1475-1564)
+- Best mood: Powerful, dramatic, heroic, monumental
+- Best for: muscular bodies, dramatic poses, heroic figures, powerful expressions
+- Characteristics: sculptural forms, dramatic lighting, powerful anatomy, heroic grandeur
+- Signature feeling: "Divine power in human form"
+
+Master 3: Titian (티치아노, 1488-1576)
+- Best mood: Sensual, warm, luxurious, vibrant
+- Best for: rich colors, luxurious fabrics, sensual beauty, warm atmospheric scenes
+- Characteristics: rich Venetian colors, warm golden tones, sensual beauty, loose expressive brushwork
+- Signature feeling: "Sensual beauty in golden warmth"
+
+Master 4: Botticelli (보티첼리, 1445-1510)
+- Best mood: Graceful, ethereal, poetic, idealized
+- Best for: graceful figures, flowing lines, idealized beauty, poetic atmosphere
+- Characteristics: flowing linear rhythms, idealized graceful forms, delicate beauty, lyrical composition
+- Signature feeling: "Ethereal grace and poetic beauty"
+
+SELECTION STRATEGY (분위기 우선):
+
+1. IDENTIFY THE DOMINANT MOOD:
+   - Mysterious/intellectual → Leonardo
+   - Powerful/heroic → Michelangelo
+   - Sensual/luxurious → Titian
+   - Graceful/ethereal → Botticelli
+
+2. For COMPLEX photos:
+   - Focus on the PRIMARY EMOTIONAL ATMOSPHERE
+   - Example: Strong facial features → If powerful: Michelangelo / If mysterious: Leonardo
+   - Example: Flowing fabrics → If sensual: Titian / If graceful: Botticelli
+
+3. SUBJECT HINTS (but mood is priority):
+   - Subtle mysterious smile → Leonardo
+   - Muscular or powerful pose → Michelangelo
+   - Rich colors and fabrics → Titian
+   - Graceful flowing lines → Botticelli
+
+CRITICAL INSTRUCTION FOR FACIAL PRESERVATION:
+When photo contains person(s), your generated prompt MUST include:
+"portraying the SAME PERSON from the photo while capturing their distinctive facial features"
+
+This ensures the person remains recognizable while only the painting style changes.
+The person's ethnicity, facial structure, and identity must be preserved.
+
+Return ONLY valid JSON (no markdown):
+{
+  "analysis": "brief description of photo's dominant mood and main subject",
+  "selected_artist": "Leonardo da Vinci" or "Michelangelo" or "Titian" or "Botticelli",
+  "selected_style": "leonardo" or "michelangelo" or "titian" or "botticelli",
+  "reason": "why this master's signature feeling matches the photo's mood",
+  "prompt": "Renaissance painting by [Master name], [master's distinctive technique], portraying the SAME PERSON from the photo while capturing their distinctive facial features, depicting the subject while preserving original composition"
+}
+
+Keep it concise and accurate.`;
+
+// 바로크 프롬프트
+const baroquePrompt = `Analyze this photo and select the BEST Baroque master based on OVERALL MOOD.
+
+You must choose ONE of these FOUR masters:
+
+Master 1: Caravaggio (카라바조, 1571-1610)
+- Best mood: Dramatic, intense, theatrical, raw
+- Best for: strong contrasts, dramatic lighting, intense emotions, raw realism
+- Characteristics: extreme tenebrism (dark shadows + dramatic light), theatrical spotlight effect, gritty realism
+- Signature feeling: "Raw drama in stark light and shadow"
+
+Master 2: Rembrandt (렘브란트, 1606-1669)
+- Best mood: Warm, introspective, contemplative, humanistic
+- Best for: portraits, elderly subjects, quiet dignity, inner emotions, warm atmospheres
+- Characteristics: warm golden light, soft atmospheric glow, deep psychological insight, gentle humanity
+- Signature feeling: "Warm humanity and inner light"
+
+Master 3: Rubens (루벤스, 1577-1640)
+- Best mood: Dynamic, exuberant, celebratory, energetic
+- Best for: movement, energy, full figures, celebrations, dynamic compositions
+- Characteristics: swirling compositions, rich warm colors, dynamic movement, abundant vitality
+- Signature feeling: "Exuberant life force and dynamic energy"
+
+Master 4: Velázquez (벨라스케스, 1599-1660)
+- Best mood: Elegant, dignified, refined, sophisticated
+- Best for: formal portraits, elegant poses, sophisticated compositions, dignified subjects
+- Characteristics: elegant restraint, sophisticated realism, atmospheric space, refined dignity
+- Signature feeling: "Elegant dignity and sophisticated grace"
+
+SELECTION STRATEGY (분위기 우선):
+
+1. IDENTIFY THE DOMINANT MOOD:
+   - Dramatic/intense → Caravaggio
+   - Warm/contemplative → Rembrandt
+   - Dynamic/energetic → Rubens
+   - Elegant/refined → Velázquez
+
+2. For COMPLEX photos:
+   - Focus on the PRIMARY EMOTIONAL QUALITY
+   - Example: Strong light/shadow → If theatrical: Caravaggio / If warm: Rembrandt
+   - Example: Active pose → If exuberant: Rubens / If dignified: Velázquez
+
+3. SUBJECT HINTS (but mood is priority):
+   - Extreme contrast lighting → Caravaggio
+   - Elderly or contemplative face → Rembrandt
+   - Dynamic movement → Rubens
+   - Formal elegant pose → Velázquez
+
+CRITICAL INSTRUCTION FOR FACIAL PRESERVATION:
+When photo contains person(s), your generated prompt MUST include:
+"portraying the SAME PERSON from the photo while capturing their distinctive facial features"
+
+This ensures the person remains recognizable while only the painting style changes.
+The person's ethnicity, facial structure, and identity must be preserved.
+
+Return ONLY valid JSON (no markdown):
+{
+  "analysis": "brief description of photo's dominant mood and main subject",
+  "selected_artist": "Caravaggio" or "Rembrandt" or "Rubens" or "Velázquez",
+  "selected_style": "caravaggio" or "rembrandt" or "rubens" or "velazquez",
+  "reason": "why this master's signature feeling matches the photo's mood",
+  "prompt": "Baroque painting by [Master name], [master's distinctive technique], portraying the SAME PERSON from the photo while capturing their distinctive facial features, depicting the subject while preserving original composition"
+}
+
+Keep it concise and accurate.`;
 
 // Fallback 프롬프트 (AI 실패시 사용)
 const fallbackPrompts = {
