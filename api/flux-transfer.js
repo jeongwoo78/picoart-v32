@@ -26,6 +26,12 @@
 // FLUX renders with selected style
 // ========================================
 
+// v33: 사조별 AI 선택 프롬프트 import
+import ancientPrompt from '../src/prompts/ancient-selection.js';
+import byzantineIslamicPrompt from '../src/prompts/byzantine-islamic-selection.js';
+import renaissancePrompt from '../src/prompts/renaissance-selection.js';
+import baroquePrompt from '../src/prompts/baroque-selection.js';
+
 // Fallback 프롬프트 (AI 실패시 사용)
 const fallbackPrompts = {
   ancient: {
@@ -303,8 +309,32 @@ Keep it concise and accurate.`;
       }
       
     } else {
-      // 미술사조: 사조 내 화가 중 최적 선택
-      promptText = `Analyze this photo and select the BEST artist from ${categoryName} period/style to transform it.
+      // v33: 미술사조별 맞춤 프롬프트 사용 (우리가 지정한 화가/스타일만 선택)
+      const movementPrompts = {
+        'ancient': ancientPrompt,
+        'byzantineIslamic': byzantineIslamicPrompt,
+        'renaissance': renaissancePrompt,
+        'baroque': baroquePrompt,
+        // 앞으로 추가될 사조들
+        // 'rococo': rococoPrompt,
+        // 'romanticism': romanticismPrompt,
+        // 'realism': realismPrompt,
+        // 'impressionism': impressionismPrompt,
+        // 'postImpressionism': postImpressionismPrompt,
+        // 'expressionism': expressionismPrompt
+      };
+      
+      const movementKey = selectedStyle.id.replace('-movement', '');
+      const customPrompt = movementPrompts[movementKey];
+      
+      if (customPrompt) {
+        // v33: 우리가 만든 맞춤 프롬프트 사용
+        console.log(`✅ Using custom prompt for ${categoryName}`);
+        promptText = customPrompt;
+      } else {
+        // Fallback: 아직 맞춤 프롬프트 없는 사조 (로코코, 낭만주의 등)
+        console.log(`⚠️ No custom prompt for ${categoryName}, using generic`);
+        promptText = `Analyze this photo and select the BEST artist from ${categoryName} period/style to transform it.
 
 Instructions:
 1. Analyze: subject, age, mood, composition, lighting
@@ -321,6 +351,7 @@ Return ONLY valid JSON (no markdown):
 }
 
 Keep it concise and accurate.`;
+      }
     }
     
     const response = await fetch('https://api.anthropic.com/v1/messages', {

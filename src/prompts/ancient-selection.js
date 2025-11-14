@@ -65,3 +65,5 @@ Return ONLY valid JSON (no markdown):
 }
 
 Keep it concise and accurate.`;
+
+export default ancientPrompt;
