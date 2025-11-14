@@ -186,25 +186,29 @@ You must choose ONE of these FOUR masters:
 Master 1: Leonardo da Vinci (레오나르도 다 빈치, 1452-1519)
 - Best mood: Mysterious, contemplative, intellectual, serene
 - Best for: portraits with enigmatic expressions, subtle emotions, intellectual subjects
-- Characteristics: sfumato (soft smoky edges), mysterious smile, gentle atmospheric perspective, scientific precision
+- Characteristics: EXTREME sfumato with soft smoky blurred edges, NO visible hard outlines anywhere, atmospheric haze, gentle transitions between light and shadow, mysterious enigmatic smile
+- FLUX keywords: "sfumato technique, soft blurred edges with NO sharp outlines, smoky atmospheric haze, gentle gradual transitions, mysterious smile, muted earth tones"
 - Signature feeling: "Mysterious beauty through perfect science"
 
 Master 2: Michelangelo (미켈란젤로, 1475-1564)
 - Best mood: Powerful, dramatic, heroic, monumental
 - Best for: muscular bodies, dramatic poses, heroic figures, powerful expressions
-- Characteristics: sculptural forms, dramatic lighting, powerful anatomy, heroic grandeur
+- Characteristics: sculptural three-dimensional forms, dramatic chiaroscuro lighting, powerfully defined anatomy with visible muscles, heroic monumental scale, contour emphasizing volume
+- FLUX keywords: "sculptural forms with strong contours, dramatic chiaroscuro, powerfully defined muscular anatomy, heroic monumental composition, three-dimensional volume"
 - Signature feeling: "Divine power in human form"
 
 Master 3: Titian (티치아노, 1488-1576)
 - Best mood: Sensual, warm, luxurious, vibrant
 - Best for: rich colors, luxurious fabrics, sensual beauty, warm atmospheric scenes
-- Characteristics: rich Venetian colors, warm golden tones, sensual beauty, loose expressive brushwork
+- Characteristics: rich Venetian colors (deep reds, golden yellows, luminous blues), warm golden tones, visible loose expressive brushwork, layered glazes creating luminous depth, sensual beauty
+- FLUX keywords: "Venetian color palette with rich reds and golden tones, visible expressive brushstrokes, luminous glazed layers, warm glowing atmosphere, sensual beauty"
 - Signature feeling: "Sensual beauty in golden warmth"
 
 Master 4: Botticelli (보티첼리, 1445-1510)
 - Best mood: Graceful, ethereal, poetic, idealized
 - Best for: graceful figures, flowing lines, idealized beauty, poetic atmosphere
-- Characteristics: flowing linear rhythms, idealized graceful forms, delicate beauty, lyrical composition
+- Characteristics: flowing linear rhythms with clear elegant contour lines, idealized graceful elongated forms, delicate refined beauty, lyrical harmonious composition, pale luminous skin tones, flowing hair and drapery
+- FLUX keywords: "clear elegant contour lines, flowing linear rhythms, idealized graceful elongated proportions, delicate pale luminous colors, flowing drapery and hair, lyrical composition"
 - Signature feeling: "Ethereal grace and poetic beauty"
 
 SELECTION STRATEGY (분위기 우선):
@@ -239,10 +243,33 @@ Return ONLY valid JSON (no markdown):
   "selected_artist": "Leonardo da Vinci" or "Michelangelo" or "Titian" or "Botticelli",
   "selected_style": "leonardo" or "michelangelo" or "titian" or "botticelli",
   "reason": "why this master's signature feeling matches the photo's mood",
-  "prompt": "Renaissance painting by [Master name], [master's distinctive technique], portraying the SAME PERSON from the photo while capturing their distinctive facial features, depicting the subject while preserving original composition"
+  "prompt": "Renaissance painting by [Master name], [USE THE SPECIFIC FLUX KEYWORDS FROM THAT MASTER'S DESCRIPTION], portraying the SAME PERSON from the photo while capturing their distinctive facial features, depicting the subject while preserving original composition"
 }
 
+CRITICAL: Your prompt MUST include the specific FLUX keywords for the selected master to ensure visual distinction.
+
 Keep it concise and accurate.`;
+
+// v34: 화가별 고정 템플릿 (100% 일관성 보장)
+const renaissanceArtistTemplates = {
+  "Leonardo da Vinci": "extreme sfumato technique with soft blurred edges and NO sharp outlines anywhere, smoky atmospheric haze with gentle gradual transitions, mysterious enigmatic expression, muted earth tones with subtle modeling, Leonardo da Vinci's scientific precision in anatomy",
+  
+  "Michelangelo": "sculptural three-dimensional forms with strong defined contours, dramatic chiaroscuro lighting, powerfully defined muscular anatomy with visible muscles and tendons, heroic monumental composition, Michelangelo's divine power in human form",
+  
+  "Titian": "rich Venetian color palette with deep reds and luminous golden yellows, visible loose expressive brushstrokes, luminous layered glazes creating depth, warm glowing atmosphere, Titian's sensual beauty in oil painting",
+  
+  "Botticelli": "clear elegant contour lines defining forms, flowing linear rhythms throughout composition, idealized graceful elongated proportions, delicate pale luminous skin tones, flowing drapery and hair with lyrical quality, Botticelli's ethereal Renaissance grace"
+};
+
+const baroqueArtistTemplates = {
+  "Caravaggio": "extreme tenebrism with 75-85% of canvas in pitch black shadows, single dramatic spotlight from upper left corner, NO ambient fill light anywhere, theatrical chiaroscuro with stark contrast, raw gritty realism, Caravaggio's dramatic Baroque intensity",
+  
+  "Rembrandt": "warm golden glowing light emanating from within, soft atmospheric luminosity with gentle transitions, NO harsh shadows, warm amber and golden brown tones throughout, deep psychological insight visible in eyes and expression, Rembrandt's humanitarian warmth",
+  
+  "Rubens": "swirling diagonal dynamic composition, rich saturated warm colors with reds and golds, dynamic curved flowing forms suggesting movement, visible energetic expressive brushstrokes, abundant vitality and life force, full robust figures, Rubens' Baroque exuberance",
+  
+  "Velázquez": "elegant restrained composition with sophisticated atmospheric perspective, soft blended brushwork creating subtle tonal transitions, refined muted color palette with grays and silvers, dignified composed poses, spatial depth through atmosphere, Velázquez's courtly dignity"
+};
 
 // 바로크 프롬프트
 const baroquePrompt = `Analyze this photo and select the BEST Baroque master based on OVERALL MOOD.
@@ -252,25 +279,29 @@ You must choose ONE of these FOUR masters:
 Master 1: Caravaggio (카라바조, 1571-1610)
 - Best mood: Dramatic, intense, theatrical, raw
 - Best for: strong contrasts, dramatic lighting, intense emotions, raw realism
-- Characteristics: extreme tenebrism (dark shadows + dramatic light), theatrical spotlight effect, gritty realism
+- Characteristics: EXTREME tenebrism with 70-80% of canvas in pitch black shadows, single theatrical spotlight from upper corner, NO ambient light, dramatic spotlight effect, gritty raw realism, strong directional light
+- FLUX keywords: "extreme tenebrism, 80% pitch black shadows, single dramatic spotlight from upper left, NO ambient fill light, theatrical chiaroscuro, raw gritty realism, strong directional lighting"
 - Signature feeling: "Raw drama in stark light and shadow"
 
 Master 2: Rembrandt (렘브란트, 1606-1669)
 - Best mood: Warm, introspective, contemplative, humanistic
 - Best for: portraits, elderly subjects, quiet dignity, inner emotions, warm atmospheres
-- Characteristics: warm golden light, soft atmospheric glow, deep psychological insight, gentle humanity
+- Characteristics: warm golden glowing light from within, soft atmospheric luminosity, NO harsh shadows, gentle transitions, deep psychological insight through eyes and expression, warm amber and golden brown tones, gentle humanity
+- FLUX keywords: "warm golden glowing light, soft atmospheric glow with gentle transitions, NO harsh shadows, warm amber and brown tones, psychological depth in eyes, soft luminous quality"
 - Signature feeling: "Warm humanity and inner light"
 
 Master 3: Rubens (루벤스, 1577-1640)
 - Best mood: Dynamic, exuberant, celebratory, energetic
 - Best for: movement, energy, full figures, celebrations, dynamic compositions
-- Characteristics: swirling compositions, rich warm colors, dynamic movement, abundant vitality
+- Characteristics: swirling diagonal compositions, rich warm saturated colors (reds, golds, flesh tones), dynamic movement with curved flowing forms, abundant vitality, visible energetic brushwork, full-bodied robust figures
+- FLUX keywords: "swirling diagonal composition, rich saturated warm colors, dynamic curved flowing forms, visible energetic brushstrokes, abundant vitality, full robust figures"
 - Signature feeling: "Exuberant life force and dynamic energy"
 
 Master 4: Velázquez (벨라스케스, 1599-1660)
 - Best mood: Elegant, dignified, refined, sophisticated
 - Best for: formal portraits, elegant poses, sophisticated compositions, dignified subjects
-- Characteristics: elegant restraint, sophisticated realism, atmospheric space, refined dignity
+- Characteristics: elegant restraint with subtle tonal transitions, sophisticated atmospheric perspective, soft blended brushwork creating spatial depth, refined muted color palette (grays, silvers, muted tones), dignified composed poses
+- FLUX keywords: "elegant restrained composition, sophisticated atmospheric perspective, soft blended subtle transitions, refined muted color palette with grays and silvers, dignified poses, spatial depth"
 - Signature feeling: "Elegant dignity and sophisticated grace"
 
 SELECTION STRATEGY (분위기 우선):
@@ -305,8 +336,10 @@ Return ONLY valid JSON (no markdown):
   "selected_artist": "Caravaggio" or "Rembrandt" or "Rubens" or "Velázquez",
   "selected_style": "caravaggio" or "rembrandt" or "rubens" or "velazquez",
   "reason": "why this master's signature feeling matches the photo's mood",
-  "prompt": "Baroque painting by [Master name], [master's distinctive technique], portraying the SAME PERSON from the photo while capturing their distinctive facial features, depicting the subject while preserving original composition"
+  "prompt": "Baroque painting by [Master name], [USE THE SPECIFIC FLUX KEYWORDS FROM THAT MASTER'S DESCRIPTION], portraying the SAME PERSON from the photo while capturing their distinctive facial features, depicting the subject while preserving original composition"
 }
+
+CRITICAL: Your prompt MUST include the specific FLUX keywords for the selected master to ensure visual distinction.
 
 Keep it concise and accurate.`;
 
@@ -780,8 +813,7 @@ export default async function handler(req, res) {
       );
       
       if (aiResult.success) {
-        // AI 성공!
-        finalPrompt = aiResult.prompt;
+        // AI가 화가 선택 성공!
         selectedArtist = aiResult.artist;
         selectionMethod = aiResult.isCustomPrompt ? 'ai_custom_prompt' : 'ai_auto';
         selectionDetails = {
@@ -789,6 +821,35 @@ export default async function handler(req, res) {
           reason: aiResult.reason
         };
         console.log('✅ AI selected:', selectedArtist);
+        
+        // v34: 화가별 고정 템플릿 사용 (100% 일관성)
+        let artistTemplate = null;
+        
+        if (selectedStyle.category === 'movements') {
+          const movementId = selectedStyle.id.replace('-movement', '');
+          
+          if (movementId === 'renaissance') {
+            artistTemplate = renaissanceArtistTemplates[selectedArtist];
+            if (artistTemplate) {
+              console.log('✅ Using Renaissance template for:', selectedArtist);
+            }
+          } else if (movementId === 'baroque') {
+            artistTemplate = baroqueArtistTemplates[selectedArtist];
+            if (artistTemplate) {
+              console.log('✅ Using Baroque template for:', selectedArtist);
+            }
+          }
+        }
+        
+        // 템플릿 사용 또는 AI 프롬프트 사용
+        if (artistTemplate) {
+          // 우리가 만든 완벽한 템플릿 사용
+          finalPrompt = `painting by ${selectedArtist}, ${artistTemplate}, portraying the SAME PERSON from the photo while capturing their distinctive facial features, depicting the subject while preserving original composition and atmosphere`;
+        } else {
+          // 템플릿 없으면 AI 생성 프롬프트 사용 (다른 사조들)
+          finalPrompt = aiResult.prompt;
+        }
+        
       } else {
         // AI 실패 → Fallback
         console.log('⚠️ AI failed, using fallback');
