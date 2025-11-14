@@ -52,8 +52,8 @@ const ResultScreen = ({
         }
       }
       
-      // v33: 미술사조도 미리 작성된 콘텐츠 사용
-      if (selectedStyle.category === 'movements') {
+      // v33: 미술사조는 미리 작성된 콘텐츠 사용 (동양화 제외, 거장만 AI 생성)
+      if (selectedStyle.category !== 'oriental' && selectedStyle.category !== 'masters') {
         console.log('📜 Loading pre-written movements education (v33)...');
         const content = getMovementsEducation();
         
