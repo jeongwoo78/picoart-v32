@@ -1,3 +1,10 @@
+// PicoArt v33 - Renaissance Category Matching
+// v33: 르네상스만 카테고리 기반, 나머지는 v32 유지
+
+// v33: 르네상스 카테고리 매칭 import
+import { findRenaissanceArtwork } from './data/artworks-renaissance.js';
+import { determineCategory } from './data/category-matcher.js';
+
 // PicoArt v32 - Art Movements 10 (Practical Selection)
 // v32: 미술사조 10개 (교육적 완성도 + 시각적 차별성 + 실용성)
 //
@@ -816,28 +823,58 @@ export default async function handler(req, res) {
         };
         console.log('✅ AI selected:', selectedArtist);
         
-        // v35: 화가별 고정 템플릿 사용 (100% 일관성)
-        let artistTemplate = null;
+        // v33/v35: 르네상스는 카테고리 기반, 나머지는 화가별 템플릿
         
         // selectedStyle.id로 직접 확인 (category는 다양할 수 있음)
         if (selectedStyle.id === 'renaissance' || selectedStyle.id === 'renaissance-movement') {
-          artistTemplate = renaissanceArtistTemplates[selectedArtist];
-          if (artistTemplate) {
-            console.log('✅ Using Renaissance template for:', selectedArtist);
+          // v33 방식: 사진 분석 → 카테고리 → 작품 매칭
+          console.log('');
+          console.log('========================================');
+          console.log('🎨 v33 RENAISSANCE CATEGORY MATCHING');
+          console.log('========================================');
+          
+          const category = determineCategory(aiResult.analysis);
+          console.log('📂 Category:', category.primary, '/', category.sub || 'N/A');
+          
+          const artwork = findRenaissanceArtwork(category);
+          
+          if (artwork) {
+            selectedArtist = artwork.artist;
+            finalPrompt = artwork.prompt;
+            selectionDetails = {
+              ...selectionDetails,
+              matchedArtwork: artwork.work,
+              matchedCategory: category,
+              method: 'v33_category_matching'
+            };
+            console.log('✅ Matched artwork:', artwork.work);
+            console.log('========================================');
+            console.log('');
+          } else {
+            // 매칭 실패 시 기존 v32 방식 폴백
+            console.log('⚠️ No artwork match, falling back to v32');
+            console.log('========================================');
+            console.log('');
+            const artistTemplate = renaissanceArtistTemplates[selectedArtist];
+            if (artistTemplate) {
+              finalPrompt = `painting by ${selectedArtist}, ${artistTemplate}, portraying the SAME PERSON from the photo while capturing their distinctive facial features, depicting the subject while preserving original composition and atmosphere`;
+            } else {
+              finalPrompt = aiResult.prompt;
+            }
           }
+          
         } else if (selectedStyle.id === 'baroque' || selectedStyle.id === 'baroque-movement') {
-          artistTemplate = baroqueArtistTemplates[selectedArtist];
+          // v32 방식: 화가별 고정 템플릿
+          const artistTemplate = baroqueArtistTemplates[selectedArtist];
           if (artistTemplate) {
             console.log('✅ Using Baroque template for:', selectedArtist);
+            finalPrompt = `painting by ${selectedArtist}, ${artistTemplate}, portraying the SAME PERSON from the photo while capturing their distinctive facial features, depicting the subject while preserving original composition and atmosphere`;
+          } else {
+            finalPrompt = aiResult.prompt;
           }
-        }
-        
-        // 템플릿 사용 또는 AI 프롬프트 사용
-        if (artistTemplate) {
-          // 우리가 만든 완벽한 템플릿 사용
-          finalPrompt = `painting by ${selectedArtist}, ${artistTemplate}, portraying the SAME PERSON from the photo while capturing their distinctive facial features, depicting the subject while preserving original composition and atmosphere`;
+          
         } else {
-          // 템플릿 없으면 AI 생성 프롬프트 사용 (다른 사조들)
+          // v32 방식: 다른 모든 사조 - AI 생성 프롬프트 사용
           finalPrompt = aiResult.prompt;
         }
         
