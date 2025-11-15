@@ -1,9 +1,6 @@
-// PicoArt v33 - Renaissance Category Matching
+// PicoArt v33 - Renaissance Category Matching (JSON)
 // v33: 르네상스만 카테고리 기반, 나머지는 v32 유지
-
-// v33: 르네상스 카테고리 매칭 import
-import { findRenaissanceArtwork } from './data/artworks-renaissance.js';
-import { determineCategory } from './data/category-matcher.js';
+// JSON 파일 방식으로 확장 가능
 
 // PicoArt v32 - Art Movements 10 (Practical Selection)
 // v32: 미술사조 10개 (교육적 완성도 + 시각적 차별성 + 실용성)
@@ -32,6 +29,193 @@ import { determineCategory } from './data/category-matcher.js';
 // Claude AI selects style (Minhwa/Pungsokdo/Gongbi/etc)
 // FLUX renders with selected style
 // ========================================
+
+// ========================================
+// v33: JSON 기반 작품 매칭 시스템
+// ========================================
+
+// JSON 캐시 (초기 1회만 로드)
+let artworksCache = {};
+let categoryRulesCache = null;
+
+/**
+ * JSON 파일에서 작품 데이터 로드
+ */
+async function loadArtworks(movement) {
+  if (artworksCache[movement]) {
+    return artworksCache[movement];
+  }
+  
+  try {
+    const baseUrl = process.env.VERCEL_URL 
+      ? `https://${process.env.VERCEL_URL}`
+      : 'http://localhost:3000';
+    
+    const response = await fetch(`${baseUrl}/data/${movement}.json`);
+    if (!response.ok) {
+      throw new Error(`Failed to load ${movement}.json: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    artworksCache[movement] = data.artworks;
+    console.log(`✅ Loaded ${data.artworks.length} artworks for ${movement}`);
+    return data.artworks;
+  } catch (error) {
+    console.error(`❌ Error loading ${movement} artworks:`, error.message);
+    return null;
+  }
+}
+
+/**
+ * AI 분석 텍스트를 카테고리로 변환 (간단 버전)
+ */
+function determineCategory(aiAnalysis) {
+  const analysis = (aiAnalysis || '').toLowerCase();
+  
+  console.log('📸 Photo Analysis:', aiAnalysis);
+  
+  // 1. 인물 그룹 체크
+  if (analysis.includes('group') || analysis.includes('multiple people') || 
+      analysis.includes('several people') || analysis.includes('people')) {
+    
+    if (analysis.includes('many') || analysis.includes('crowd') || 
+        analysis.includes('large group') || /\d+\s*people/.test(analysis)) {
+      return { primary: 'portrait', sub: 'portrait-group-7plus' };
+    }
+    
+    if (analysis.includes('several') || analysis.includes('medium group')) {
+      return { primary: 'portrait', sub: 'portrait-group-4-6' };
+    }
+    
+    return { primary: 'portrait', sub: 'portrait-small-group' };
+  }
+  
+  // 2. 단일 인물 체크
+  if (analysis.includes('portrait') || analysis.includes('face') || 
+      analysis.includes('person') || analysis.includes('man') || 
+      analysis.includes('woman') || analysis.includes('child')) {
+    
+    // 복합 카테고리 우선
+    if (analysis.includes('animal') || analysis.includes('pet') || 
+        analysis.includes('dog') || analysis.includes('cat')) {
+      return { primary: 'mixed', sub: 'mixed-portrait-animal' };
+    }
+    
+    if (analysis.includes('food') || analysis.includes('eating') || 
+        analysis.includes('meal') || analysis.includes('dining')) {
+      return { primary: 'mixed', sub: 'mixed-portrait-food' };
+    }
+    
+    if (analysis.includes('landscape') || analysis.includes('outdoor') || 
+        analysis.includes('nature') || analysis.includes('scenery')) {
+      return { primary: 'mixed', sub: 'mixed-portrait-landscape' };
+    }
+    
+    if (analysis.includes('building') || analysis.includes('architecture') || 
+        analysis.includes('structure')) {
+      return { primary: 'mixed', sub: 'mixed-portrait-architecture' };
+    }
+    
+    // 포즈/구도
+    if (analysis.includes('close') || analysis.includes('closeup') || 
+        analysis.includes('headshot') || analysis.includes('face')) {
+      return { primary: 'portrait', sub: 'portrait-closeup' };
+    }
+    
+    if (analysis.includes('full body') || analysis.includes('standing') || 
+        analysis.includes('full-length')) {
+      return { primary: 'portrait', sub: 'portrait-full-body' };
+    }
+    
+    if (analysis.includes('dynamic') || analysis.includes('action') || 
+        analysis.includes('jumping') || analysis.includes('dancing')) {
+      return { primary: 'portrait', sub: 'portrait-dynamic' };
+    }
+    
+    return { primary: 'portrait', sub: 'portrait-upper-body' };
+  }
+  
+  // 3. 이벤트
+  if (analysis.includes('wedding')) return { primary: 'event', sub: 'event-wedding' };
+  if (analysis.includes('party') || analysis.includes('birthday')) return { primary: 'event', sub: 'event-party' };
+  if (analysis.includes('festival')) return { primary: 'event', sub: 'event-festival' };
+  if (analysis.includes('religious') || analysis.includes('church')) return { primary: 'event', sub: 'event-religious' };
+  
+  // 4. 자연
+  if (analysis.includes('landscape') || analysis.includes('nature') || analysis.includes('outdoor')) {
+    if (analysis.includes('sea') || analysis.includes('ocean') || analysis.includes('beach')) {
+      return { primary: 'nature', sub: 'nature-sea' };
+    }
+    if (analysis.includes('mountain')) return { primary: 'nature', sub: 'nature-mountain' };
+    if (analysis.includes('forest') || analysis.includes('tree')) return { primary: 'nature', sub: 'nature-forest' };
+    if (analysis.includes('field') || analysis.includes('grass')) return { primary: 'nature', sub: 'nature-field' };
+    if (analysis.includes('sky') || analysis.includes('cloud')) return { primary: 'nature', sub: 'nature-sky' };
+    return { primary: 'nature', sub: null };
+  }
+  
+  // 5. 건축
+  if (analysis.includes('building') || analysis.includes('architecture') || analysis.includes('interior')) {
+    if (analysis.includes('interior') || analysis.includes('room')) return { primary: 'urban', sub: 'urban-interior' };
+    if (analysis.includes('night')) return { primary: 'urban', sub: 'urban-night' };
+    if (analysis.includes('street')) return { primary: 'urban', sub: 'urban-street' };
+    return { primary: 'urban', sub: 'urban-architecture' };
+  }
+  
+  // 6. 정물
+  if (analysis.includes('food')) return { primary: 'still-life', sub: 'still-life-food' };
+  if (analysis.includes('drink') || analysis.includes('coffee')) return { primary: 'still-life', sub: 'still-life-drink' };
+  if (analysis.includes('flower')) return { primary: 'still-life', sub: 'still-life-flowers' };
+  if (analysis.includes('book')) return { primary: 'still-life', sub: 'still-life-books' };
+  
+  // 7. 동물
+  if (analysis.includes('animal') || analysis.includes('pet')) return { primary: 'animal', sub: 'animal-pet' };
+  if (analysis.includes('bird')) return { primary: 'animal', sub: 'animal-bird' };
+  if (analysis.includes('wild')) return { primary: 'animal', sub: 'animal-wild' };
+  
+  // 8. 일상
+  if (analysis.includes('working') || analysis.includes('office')) return { primary: 'daily-life', sub: 'daily-life-work' };
+  if (analysis.includes('exercise') || analysis.includes('sport')) return { primary: 'daily-life', sub: 'daily-life-exercise' };
+  if (analysis.includes('cooking')) return { primary: 'daily-life', sub: 'daily-life-cooking' };
+  if (analysis.includes('resting') || analysis.includes('relaxing')) return { primary: 'daily-life', sub: 'daily-life-rest' };
+  
+  // 기본값
+  console.log('⚠️ No specific category match, defaulting to portrait');
+  return { primary: 'portrait', sub: 'portrait-upper-body' };
+}
+
+/**
+ * 카테고리로 작품 찾기
+ */
+function findArtworkByCategory(artworks, category) {
+  if (!artworks || artworks.length === 0) {
+    return null;
+  }
+  
+  // 소카테고리 매칭 우선
+  if (category.sub) {
+    const subMatch = artworks.find(art => 
+      art.subcategories && art.subcategories.includes(category.sub)
+    );
+    if (subMatch) {
+      console.log(`✅ v33 Match: ${category.sub} → ${subMatch.artist} - ${subMatch.work}`);
+      return subMatch;
+    }
+  }
+  
+  // 주 카테고리 매칭
+  const primaryMatches = artworks.filter(art =>
+    art.categories && art.categories.includes(category.primary)
+  );
+  
+  if (primaryMatches.length > 0) {
+    const selected = primaryMatches[Math.floor(Math.random() * primaryMatches.length)];
+    console.log(`✅ v33 Match: ${category.primary} → ${selected.artist} - ${selected.work}`);
+    return selected;
+  }
+  
+  console.log('⚠️ v33: No artwork match');
+  return null;
+}
 
 // v33: 사조별 AI 선택 프롬프트 (직접 포함)
 // Import 방식은 Vercel 서버리스 환경에서 불안정하므로 직접 포함
@@ -827,34 +1011,61 @@ export default async function handler(req, res) {
         
         // selectedStyle.id로 직접 확인 (category는 다양할 수 있음)
         if (selectedStyle.id === 'renaissance' || selectedStyle.id === 'renaissance-movement') {
-          // v33 방식: 사진 분석 → 카테고리 → 작품 매칭
+          // v33 방식: JSON 로드 → 사진 분석 → 카테고리 → 작품 매칭
           console.log('');
           console.log('========================================');
-          console.log('🎨 v33 RENAISSANCE CATEGORY MATCHING');
+          console.log('🎨 v33 RENAISSANCE CATEGORY MATCHING (JSON)');
           console.log('========================================');
           
-          const category = determineCategory(aiResult.analysis);
-          console.log('📂 Category:', category.primary, '/', category.sub || 'N/A');
-          
-          const artwork = findRenaissanceArtwork(category);
-          
-          if (artwork) {
-            selectedArtist = artwork.artist;
-            finalPrompt = artwork.prompt;
-            selectionDetails = {
-              ...selectionDetails,
-              matchedArtwork: artwork.work,
-              matchedCategory: category,
-              method: 'v33_category_matching'
-            };
-            console.log('✅ Matched artwork:', artwork.work);
-            console.log('========================================');
-            console.log('');
-          } else {
-            // 매칭 실패 시 기존 v32 방식 폴백
-            console.log('⚠️ No artwork match, falling back to v32');
-            console.log('========================================');
-            console.log('');
+          try {
+            const artworks = await loadArtworks('renaissance');
+            
+            if (artworks) {
+              const category = determineCategory(aiResult.analysis);
+              console.log('📂 Category:', category.primary, '/', category.sub || 'N/A');
+              
+              const artwork = findArtworkByCategory(artworks, category);
+              
+              if (artwork) {
+                selectedArtist = artwork.artist;
+                finalPrompt = artwork.prompt;
+                selectionDetails = {
+                  ...selectionDetails,
+                  matchedArtwork: artwork.work,
+                  matchedCategory: category,
+                  method: 'v33_json_matching'
+                };
+                console.log('✅ Matched artwork:', artwork.work);
+                console.log('========================================');
+                console.log('');
+              } else {
+                // 매칭 실패 시 기존 v32 방식 폴백
+                console.log('⚠️ No artwork match, falling back to v32');
+                console.log('========================================');
+                console.log('');
+                const artistTemplate = renaissanceArtistTemplates[selectedArtist];
+                if (artistTemplate) {
+                  finalPrompt = `painting by ${selectedArtist}, ${artistTemplate}, portraying the SAME PERSON from the photo while capturing their distinctive facial features, depicting the subject while preserving original composition and atmosphere`;
+                } else {
+                  finalPrompt = aiResult.prompt;
+                }
+              }
+            } else {
+              // JSON 로드 실패 시 v32 폴백
+              console.log('⚠️ Failed to load renaissance.json, falling back to v32');
+              console.log('========================================');
+              console.log('');
+              const artistTemplate = renaissanceArtistTemplates[selectedArtist];
+              if (artistTemplate) {
+                finalPrompt = `painting by ${selectedArtist}, ${artistTemplate}, portraying the SAME PERSON from the photo while capturing their distinctive facial features, depicting the subject while preserving original composition and atmosphere`;
+              } else {
+                finalPrompt = aiResult.prompt;
+              }
+            }
+          } catch (error) {
+            // 에러 시 v32 폴백
+            console.error('❌ v33 Error:', error.message);
+            console.log('⚠️ Falling back to v32');
             const artistTemplate = renaissanceArtistTemplates[selectedArtist];
             if (artistTemplate) {
               finalPrompt = `painting by ${selectedArtist}, ${artistTemplate}, portraying the SAME PERSON from the photo while capturing their distinctive facial features, depicting the subject while preserving original composition and atmosphere`;
